@@ -54,12 +54,12 @@ const getBlogById = async (ctx) => {
 // 获取所有分类
 const getAllCategory = async (ctx) => {
   return new Promise((resolve, reject) => {
-    Blog.find({}, { category: 1 }, (err, doc) => {
+    Blog.find({}, (err, doc) => {
       if (err) {
         reject(err);
       }
       resolve(doc);
-    });
+    }).distinct("category").exec();
   })
 };
 router.post('/publishBlog', async ctx => {
