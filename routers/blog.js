@@ -62,6 +62,17 @@ const getAllCategory = async (ctx) => {
     }).distinct("category").exec();
   })
 };
+// 根据分类获取博客列表
+const getBlogsByCategory = async (ctx) => {
+  return new Promise((resolve, reject) => {
+    Blog.find({ category: ctx.query.category }, (err, doc) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(doc);
+    }).limit(8).skip((ctx.query.pageNum - 1) * 8)
+  })
+};
 router.post('/publishBlog', async ctx => {
   let blog = new Blog({
     title: ctx.request.body.title,
@@ -120,6 +131,24 @@ router.get('/getAllCategory', async ctx => {
     ctx.body = {
       code: 0,
       data: blogs,
+    };
+  }
+})
+router.get('/getBlogsByCategory', async ctx => {
+  let blogs = await getBlogsByCategory(ctx)
+  let total = await Blog.countDocuments({ category: ctx.query.category })
+  if (!blogs) {
+    ctx.status = 200
+    ctx.body = {
+      code: -1,
+      res: '没有查到文章'
+    }
+  } else {
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
+      data: blogs,
+      total: total
     };
   }
 })

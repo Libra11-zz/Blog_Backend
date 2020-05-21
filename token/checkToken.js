@@ -13,7 +13,12 @@ const avoidVerifyUrl = [
 module.exports = async (ctx, next) => {
   let url = ctx.request.url;
   // 不用检查的接口
-  if (!url.startsWith("/api") || avoidVerifyUrl.includes(url) || url.startsWith("/api/blogs/getBlogById") || url.startsWith("/api/comments/getComments")) {
+  if (!url.startsWith("/api") ||
+    avoidVerifyUrl.includes(url) ||
+    url.startsWith("/api/blogs/getBlogById") ||
+    url.startsWith("/api/comments/getComments") ||
+    url.startsWith("/api/blogs/getBlogsByCategory")
+  ) {
     await next()
   } else {
     //拿到token
