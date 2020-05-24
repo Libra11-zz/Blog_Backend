@@ -28,6 +28,17 @@ const getAllBlogs = async (ctx) => {
       .exec();
   });
 };
+//获取全部Blog
+const getAllBlog = async (ctx) => {
+  return new Promise((resolve, reject) => {
+    Blog.find({}, (err, doc) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(doc);
+    }).sort({ pubTime: -1 })
+  });
+};
 //获取全部Blog数量
 const getAllBlogsCount = async (ctx) => {
   let { page, limit } = ctx.request.query;
@@ -165,6 +176,22 @@ router.get('/getAllBlogs', async ctx => {
     ctx.body = {
       code: 0,
       total: blogs.length,
+      blogs
+    };
+  }
+})
+router.get('/getAllBlog', async ctx => {
+  let blogs = await getAllBlog(ctx)
+  if (!blogs) {
+    ctx.status = 200
+    ctx.body = {
+      code: -1,
+      res: '没有查到文章'
+    }
+  } else {
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
       blogs
     };
   }

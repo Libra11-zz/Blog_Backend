@@ -5,6 +5,7 @@ const avoidVerifyUrl = [
   "/api/users/logout",
   "/api/blogs/getRecentBlog",
   "/api/blogs/getAllBlogsCount",
+  "/api/blogs/getAllBlog",
   "/api/blogs/getAllCategory",
   "/api/comments/publishComment",
   "/api/comments/replyComment",
