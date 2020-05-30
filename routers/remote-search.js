@@ -25,6 +25,17 @@ const getAllTags = () => {
     });
   });
 };
+//找到所有文章分类
+const searchCategory = () => {
+  return new Promise((resolve, reject) => {
+    Blog.find({}, { category: 1 }, (err, doc) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(doc);
+    });
+  });
+};
 router.get('/getAllAdminUsers', async ctx => {
   let info = await findAllAdminUsers(ctx)
   if (!info) {
@@ -57,6 +68,28 @@ router.get('/getAllTags', async ctx => {
           res.push(element)
         }
       });
+    }
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
+      info: res
+    };
+  }
+})
+router.get('/searchCategory', async ctx => {
+  let info = await searchCategory(ctx)
+  if (!info) {
+    ctx.status = 200
+    ctx.body = {
+      code: -1,
+      res: '没有查询到标签'
+    }
+  } else {
+    let res = []
+    for (const item of info) {
+      if (!res.includes(item.category)) {
+        res.push(item.category)
+      }
     }
     ctx.status = 200;
     ctx.body = {
