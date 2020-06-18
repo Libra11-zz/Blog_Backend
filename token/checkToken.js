@@ -7,6 +7,7 @@ const avoidVerifyUrl = [
   "/api/blogs/getAllBlogsCount",
   "/api/blogs/getAllBlog",
   "/api/blogs/getAllCategory",
+  "/api/remote-search/getAllTags",
   "/api/comments/publishComment",
   "/api/comments/replyComment",
 ]
@@ -18,7 +19,8 @@ module.exports = async (ctx, next) => {
     avoidVerifyUrl.includes(url) ||
     url.startsWith("/api/blogs/getBlogById") ||
     url.startsWith("/api/comments/getComments") ||
-    url.startsWith("/api/blogs/getBlogsByCategory")
+    url.startsWith("/api/blogs/getBlogsByCategory") ||
+    url.startsWith("/api/blogs/getBlogsByTag")
   ) {
     await next()
   } else {

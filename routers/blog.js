@@ -75,13 +75,26 @@ const getAllCategory = async (ctx) => {
 };
 // 根据分类获取博客列表
 const getBlogsByCategory = async (ctx) => {
+  let pageSize = 8
   return new Promise((resolve, reject) => {
     Blog.find({ category: ctx.query.category }, (err, doc) => {
       if (err) {
         reject(err);
       }
       resolve(doc);
-    }).limit(8).skip((ctx.query.pageNum - 1) * 8)
+    }).limit(8).skip((ctx.query.pageNum - 1) * pageSize)
+  })
+};
+// 根据标签获取博客列表
+const getBlogsByTag = async (ctx) => {
+  let pageSize = 8
+  return new Promise((resolve, reject) => {
+    Blog.find({ tag: { $in: [ctx.query.tag] } }, (err, doc) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(doc);
+    }).limit(8).skip((ctx.query.pageNum - 1) * pageSize)
   })
 };
 router.post('/publishBlog', async ctx => {
@@ -148,6 +161,24 @@ router.get('/getAllCategory', async ctx => {
 router.get('/getBlogsByCategory', async ctx => {
   let blogs = await getBlogsByCategory(ctx)
   let total = await Blog.countDocuments({ category: ctx.query.category })
+  if (!blogs) {
+    ctx.status = 200
+    ctx.body = {
+      code: -1,
+      res: '没有查到文章'
+    }
+  } else {
+    ctx.status = 200;
+    ctx.body = {
+      code: 0,
+      data: blogs,
+      total: total
+    };
+  }
+})
+router.get('/getBlogsByTag', async ctx => {
+  let blogs = await getBlogsByTag(ctx)
+  let total = await Blog.countDocuments({ tag: { $in: [ctx.query.tag] } })
   if (!blogs) {
     ctx.status = 200
     ctx.body = {
